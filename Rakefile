@@ -1,5 +1,5 @@
 require './app'
-require_relative 'model/tutorial.rb'
+require_relative 'model/nbaplayer.rb'
 require 'rake/testtask'
 
 task :default => :spec
