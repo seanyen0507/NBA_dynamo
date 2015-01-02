@@ -2,14 +2,13 @@ require 'sinatra/base'
 require_relative 'model/nbaplayer'
 require 'NBA_info'
 require 'json'
-require 'sinatra/flash'
 
 require 'httparty'
 
 # Simple version of nba_scrapper
 class NBACatcherApp < Sinatra::Base
   enable :sessions
-  register Sinatra::Flash
+  # register Sinatra::Flash
   use Rack::MethodOverride
   configure :production, :development do
     enable :logging
