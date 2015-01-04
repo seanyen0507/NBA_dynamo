@@ -142,4 +142,20 @@ class NBACatcherApp < Sinatra::Base
   delete '/api/v1/nbaplayers/:id' do
     nbaplayer = Nbaplayer.destroy(params[:id])
   end
+
+  get '/api/v1/nbaupdater/?' do
+    content_type :json
+    body = request.body.read
+
+    begin
+      index = Nbaplayer.all.map do |t|
+        { id: t.id, description: t.description,
+          created_at: t.created_at, updated_at: t.updated_at }
+      end
+    rescue => e
+      halt 400
+    end
+    
+    index.to_json
+  end
 end
