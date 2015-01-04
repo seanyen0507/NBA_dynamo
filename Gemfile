@@ -5,7 +5,7 @@ gem 'sinatra'
 gem 'sinatra-contrib'
 gem 'NBA_info'
 gem 'json'
-
+gem 'httparty'
 gem 'aws-sdk'
 
 # group :development do

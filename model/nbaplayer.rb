@@ -1,7 +1,7 @@
 require 'aws-sdk'
 
 
-class Nbaplayer < AWS::Record::HashMode
+class Nbaplayer < AWS::Record::HashModel
   string_attr :description
   string_attr :playernames
   timestamps
