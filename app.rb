@@ -41,13 +41,6 @@ class NBACatcherApp < Sinatra::Base
       @lineup = {}
       @body_null = true
       sean = Scraper.new
-      # begin
-      #   get_profile(playernames).nil ? @player_wrong = false : @player_wrong=\
-      # true
-      #   fail 'err' if @player_wrong == false
-      # rescue
-      #   halt 404
-      # end
       begin
         playernames == '' ? @body_null = false : @body_null = true
         fail 'err' if @body_null == false
@@ -155,7 +148,7 @@ class NBACatcherApp < Sinatra::Base
     rescue => e
       halt 400
     end
-    
+
     index.to_json
   end
 end
