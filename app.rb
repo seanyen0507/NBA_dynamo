@@ -30,7 +30,7 @@ class NBACatcherApp < Sinatra::Base
         rescue
           nil
         else
-          profile_after
+          [profile_after, sam.profile(name)[0]]
         end
       rescue
         halt 404
