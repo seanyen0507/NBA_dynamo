@@ -123,8 +123,6 @@ class NBACatcherApp < Sinatra::Base
       halt 400
     end
 
-    tmp = playernames.gsub(':','=>')
-    puts eval(tmp).keys
     playernames
   end
 
