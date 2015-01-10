@@ -8,7 +8,7 @@ class Nbaplayer < AWS::Record::HashModel
   string_attr :result
   timestamps
 
-  def self.destory(id)
+  def self.destroy(id)
     find(id).delete
   end
 

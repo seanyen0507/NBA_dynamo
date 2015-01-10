@@ -41,12 +41,14 @@ class NBACatcherApp < Sinatra::Base
       @lineup = {}
       @body_null = true
       sean = Scraper.new
+
       begin
         playernames == '' ? @body_null = false : @body_null = true
         fail 'err' if @body_null == false
       rescue
         halt 400
       end
+
       begin
         po = sean.game[0]
         s = sean.game[2]
@@ -102,38 +104,69 @@ class NBACatcherApp < Sinatra::Base
     rescue
       halt 400
     end
+    check_start_lineup(req['playernames'], req['description']).to_json
     nbaplayer = Nbaplayer.new
     nbaplayer.description = req['description'].to_json
-    nbaplayer.playernames = req['playernames'].to_json
+    nbaplayer.playernames = @lineup.to_json
 
     redirect "api/v1/nbaplayers/#{nbaplayer.id}" if nbaplayer.save
   end
 
   get '/api/v1/nbaplayers/:id' do
     content_type :json
+
     begin
       @nbaplayer = Nbaplayer.find(params[:id])
-      description = JSON.parse(@nbaplayer.description)
-      playernames = JSON.parse(@nbaplayer.playernames)
+      # description = JSON.parse(@nbaplayer.description)
+      playernames = @nbaplayer.playernames
     rescue
       halt 400
     end
-    check_start_lineup(playernames, description).to_json
+
+    tmp = playernames.gsub(':','=>')
+    puts eval(tmp).keys
+    playernames
   end
 
   put '/api/v1/nbaplayers/:id' do
     content_type :json
+
     begin
       req = JSON.parse(request.body.read)
       logger.info req
     rescue
       halt 400
     end
+    
     nbaplayer = Nbaplayer.update(params[:id],req['playernames'].to_json)
   end
 
   delete '/api/v1/nbaplayers/:id' do
     nbaplayer = Nbaplayer.destroy(params[:id])
+  end
+
+
+  get '/api/v1/nbaupdater/:id' do
+    content_type :json
+
+    begin
+      nbaplayer = Nbaplayer.find(params[:id])
+    rescue
+      halt 404
+    end
+
+    begin
+      description = JSON.parse(@nbaplayer.description)
+      playernames = nbaplayer.playernames
+      tmp = playernames.gsub(':','=>')
+      playernames=eval(tmp).keys
+      check_start_lineup(playernames, description).to_json
+      nbaplayer.playernames = @lineup.to_json
+      nbaplayer.save
+    rescue => e
+      halt 400, e
+    end
+
   end
 
   get '/api/v1/nbaupdater/?' do
