@@ -4,6 +4,8 @@ require 'aws-sdk'
 class Nbaplayer < AWS::Record::HashModel
   string_attr :description
   string_attr :playernames
+  string_attr :count
+  string_attr :result
   timestamps
 
   def self.destroy(id)

@@ -114,27 +114,28 @@ class NBACatcherApp < Sinatra::Base
 
   get '/api/v1/nbaplayers/:id' do
     content_type :json
+
     begin
       @nbaplayer = Nbaplayer.find(params[:id])
-      # description = JSON.parse(@nbaplayer.description)
+      description = JSON.parse(@nbaplayer.description)
       playernames = @nbaplayer.playernames
     rescue
       halt 400
     end
-    tmp = playernames.gsub(':','=>')
-    puts eval(tmp).keys
+
     playernames
-    # check_start_lineup(playernames, description).to_json
   end
 
   put '/api/v1/nbaplayers/:id' do
     content_type :json
+
     begin
       req = JSON.parse(request.body.read)
       logger.info req
     rescue
       halt 400
     end
+    
     nbaplayer = Nbaplayer.update(params[:id],req['playernames'].to_json)
   end
 
@@ -177,9 +178,8 @@ class NBACatcherApp < Sinatra::Base
       end
     rescue => e
       halt 400
-    end   
+    end
 
     index.to_json
   end
-
 end
