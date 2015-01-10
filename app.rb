@@ -142,6 +142,30 @@ class NBACatcherApp < Sinatra::Base
     nbaplayer = Nbaplayer.destroy(params[:id])
   end
 
+
+  get '/api/v1/nbaupdater/:id' do
+    content_type :json
+
+    begin
+      nbaplayer = Nbaplayer.find(params[:id])
+    rescue
+      halt 404
+    end
+
+    begin
+      description = JSON.parse(@nbaplayer.description)
+      playernames = nbaplayer.playernames
+      tmp = playernames.gsub(':','=>')
+      playernames=eval(tmp).keys
+      check_start_lineup(playernames, description).to_json
+      nbaplayer.playernames = @lineup.to_json
+      nbaplayer.save
+    rescue => e
+      halt 400, e
+    end
+
+  end
+
   get '/api/v1/nbaupdater/?' do
     content_type :json
     body = request.body.read
@@ -157,4 +181,5 @@ class NBACatcherApp < Sinatra::Base
 
     index.to_json
   end
+
 end
