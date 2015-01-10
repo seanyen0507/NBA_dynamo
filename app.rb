@@ -135,7 +135,7 @@ class NBACatcherApp < Sinatra::Base
     rescue
       halt 400
     end
-    
+
     nbaplayer = Nbaplayer.update(params[:id],req['playernames'].to_json)
   end
 
