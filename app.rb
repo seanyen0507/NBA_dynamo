@@ -116,14 +116,14 @@ class NBACatcherApp < Sinatra::Base
     content_type :json
 
     begin
-      @nbaplayer = Nbaplayer.find(params[:id])
-      description = JSON.parse(@nbaplayer.description)
-      playernames = @nbaplayer.playernames
+      player = Nbaplayer.find(params[:id])
+      description = JSON.parse(player.description)
+      names = player.playernames
     rescue
       halt 400
     end
 
-    playernames
+    names
   end
 
   put '/api/v1/nbaplayers/:id' do
