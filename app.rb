@@ -41,19 +41,14 @@ class NBACatcherApp < Sinatra::Base
       @lineup = {}
       @body_null = true
       sean = Scraper.new
-      # begin
-      #   get_profile(playernames).nil ? @player_wrong = false : @player_wrong=\
-      # true
-      #   fail 'err' if @player_wrong == false
-      # rescue
-      #   halt 404
-      # end
+
       begin
         playernames == '' ? @body_null = false : @body_null = true
         fail 'err' if @body_null == false
       rescue
         halt 400
       end
+
       begin
         po = sean.game[0]
         s = sean.game[2]
@@ -109,9 +104,10 @@ class NBACatcherApp < Sinatra::Base
     rescue
       halt 400
     end
+    check_start_lineup(req['playernames'], req['description']).to_json
     nbaplayer = Nbaplayer.new
     nbaplayer.description = req['description'].to_json
-    nbaplayer.playernames = req['playernames'].to_json
+    nbaplayer.playernames = @lineup.to_json
 
     redirect "api/v1/nbaplayers/#{nbaplayer.id}" if nbaplayer.save
   end
@@ -120,12 +116,15 @@ class NBACatcherApp < Sinatra::Base
     content_type :json
     begin
       @nbaplayer = Nbaplayer.find(params[:id])
-      description = JSON.parse(@nbaplayer.description)
-      playernames = JSON.parse(@nbaplayer.playernames)
+      # description = JSON.parse(@nbaplayer.description)
+      playernames = @nbaplayer.playernames
     rescue
       halt 400
     end
-    check_start_lineup(playernames, description).to_json
+    tmp = playernames.gsub(':','=>')
+    puts eval(tmp).keys
+    playernames
+    # check_start_lineup(playernames, description).to_json
   end
 
   put '/api/v1/nbaplayers/:id' do
@@ -143,6 +142,30 @@ class NBACatcherApp < Sinatra::Base
     nbaplayer = Nbaplayer.destroy(params[:id])
   end
 
+
+  get '/api/v1/nbaupdater/:id' do
+    content_type :json
+
+    begin
+      nbaplayer = Nbaplayer.find(params[:id])
+    rescue
+      halt 404
+    end
+
+    begin
+      description = JSON.parse(@nbaplayer.description)
+      playernames = nbaplayer.playernames
+      tmp = playernames.gsub(':','=>')
+      playernames=eval(tmp).keys
+      check_start_lineup(playernames, description).to_json
+      nbaplayer.playernames = @lineup.to_json
+      nbaplayer.save
+    rescue => e
+      halt 400, e
+    end
+
+  end
+
   get '/api/v1/nbaupdater/?' do
     content_type :json
     body = request.body.read
@@ -154,8 +177,9 @@ class NBACatcherApp < Sinatra::Base
       end
     rescue => e
       halt 400
-    end
-    
+    end   
+
     index.to_json
   end
+
 end
