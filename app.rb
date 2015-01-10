@@ -117,7 +117,7 @@ class NBACatcherApp < Sinatra::Base
 
     begin
       @nbaplayer = Nbaplayer.find(params[:id])
-      # description = JSON.parse(@nbaplayer.description)
+      description = JSON.parse(@nbaplayer.description)
       playernames = @nbaplayer.playernames
     rescue
       halt 400
