@@ -17,10 +17,13 @@ class NBACatcherApp < Sinatra::Base
   API_BASE_URI = 'http://localhost:9292'
   helpers do
     def get_profile(playername)
+      data = %w('LeaderPTS' 'LeaderREB' 'LeaderAST')
       sam = Scraper.new
       profile_after = {
         'name' => playername, 'profiles' => []
       }
+      x = sam.leader
+      leader_score = Hash[data.zip(x)]
       begin
         begin
           name = params[:playername]
@@ -30,7 +33,7 @@ class NBACatcherApp < Sinatra::Base
         rescue
           nil
         else
-          profile_after
+          [profile_after, sam.profile(name)[0], leader_score]
         end
       rescue
         halt 404
