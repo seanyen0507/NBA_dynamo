@@ -60,6 +60,7 @@ class NBACatcherApp < Sinatra::Base
                 lastname = playername.split(' ').last
                 if temp.include?(lastname.capitalize)
                   @lineup[playername] = 'Yes, he is in start lineup today.'
+                  puts "con"
                 end
               end
             end
@@ -70,6 +71,7 @@ class NBACatcherApp < Sinatra::Base
         playernames.each do |playername|
           unless @lineup.key?(playername)
             @lineup[playername] = 'No, he is not in start lineup today.'
+            puts "wrong"
           end
         end
       rescue
@@ -122,7 +124,6 @@ class NBACatcherApp < Sinatra::Base
     rescue
       halt 400
     end
-
     names
   end
 
@@ -154,7 +155,7 @@ class NBACatcherApp < Sinatra::Base
     end
 
     begin
-      description = JSON.parse(@nbaplayer.description)
+      description = JSON.parse(nbaplayer.description)
       playernames = nbaplayer.playernames
       tmp = playernames.gsub(':','=>')
       playernames=eval(tmp).keys
